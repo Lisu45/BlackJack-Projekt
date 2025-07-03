@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+						 xmlns:viewModel="clr-namespace:BlackJack.ViewModels"			 
+             xmlns:sys="using:System"
+             x:Class="BlackJack.Views.GameView">
+
+	
+	<UserControl.Background>
+		<ImageBrush Source="avares://BlackJack/Assets/Images/Table.png" Stretch="UniformToFill"/>
+	</UserControl.Background>
+
+	<Grid RowDefinitions="auto, *,*, auto">
+		<Grid Grid.Row="0" ColumnDefinitions="*, auto">
+			<Label Grid.Column="0" Foreground="{DynamicResource PrimaryForeground}" Content="{Binding Player.Budget, StringFormat = Budżet: {0:C}}"></Label>
+			<Label Grid.Column="1" Foreground="{DynamicResource PrimaryForeground}" Content="{Binding Player.Bet, StringFormat = Stawka: {0:C}}"></Label>
+		</Grid>
+		<StackPanel Grid.Row="1">
+			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20" Orientation="Horizontal">
+				
+        <ItemsControl ItemsSource="{Binding Dealer.Sheet}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Border BorderBrush="Black" BorderThickness="2" CornerRadius="8" Background="White" Margin="5" Width="100" Height="150">
+								<Grid RowDefinitions="Auto, *, Auto">
+									<TextBlock Foreground="{Binding Color}" Text="{Binding Value}" FontFamily="{DynamicResource PhosphorFill}" Grid.Row="0" Margin="5" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top" />
+									<TextBlock Foreground="{Binding Color}" Text="{Binding Suit}" FontFamily="{DynamicResource PhosphorFill}" Grid.Row="1" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
+									<TextBlock Foreground="{Binding Color}" Text="{Binding Value}" FontFamily="{DynamicResource PhosphorFill}" Grid.Row="2" Margin="5" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+										<TextBlock.RenderTransform>
+											<RotateTransform Angle="180" />
+										</TextBlock.RenderTransform>
+									</TextBlock>
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+        
+				<Label FontFamily="Helvetica" Content="{Binding Dealer.Points}" Foreground="{DynamicResource PrimaryForeground}" IsVisible="{Binding !BudgetVisibility}"></Label>
+			</StackPanel>
+		</StackPanel>
+    
+    <StackPanel Grid.Row="2">
+			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20" Orientation="Horizontal">
+
+				<ItemsControl ItemsSource="{Binding Player.Sheet}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Border BorderBrush="Black" BorderThickness="2" CornerRadius="8" Background="White" Margin="5" Width="100" Height="150">
+								<Grid RowDefinitions="Auto, *, Auto">
+									<TextBlock Foreground="{Binding Color}" Text="{Binding Value}" FontFamily="{DynamicResource PhosphorFill}" Grid.Row="0" Margin="5" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top" />
+									<TextBlock Foreground="{Binding Color}" Text="{Binding Suit}" FontFamily="{DynamicResource PhosphorFill}" Grid.Row="1" FontSize="32" HorizontalAlignment="Center" VerticalAlignment="Center" />
+									<TextBlock Foreground="{Binding Color}" Text="{Binding Value}" FontFamily="{DynamicResource PhosphorFill}" Grid.Row="2" Margin="5" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+										<TextBlock.RenderTransform>
+											<RotateTransform Angle="180" />
+										</TextBlock.RenderTransform>
+									</TextBlock>
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+        
+				<Label Content="{Binding Player.Points}" Foreground="{DynamicResource PrimaryForeground}" IsVisible="{Binding !BudgetVisibility}"/>
+			</StackPanel>
+		</StackPanel>
+    
+		<StackPanel Grid.Row="3">
+			<Slider Maximum="{Binding Player.Budget}" Value="{Binding BetSliderValue}" IsVisible="{Binding BudgetVisibility}" TickFrequency="1" IsSnapToTickEnabled="True" Margin="50 0 50 0"/>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" IsVisible="{Binding BudgetVisibility}">
+				<TextBox Name="BetTextBox" Watermark="Podaj stawkę" Text="{Binding BetInputText}" IsVisible="{Binding BudgetVisibility}" ></TextBox>
+				<Button Classes="budget" Command="{Binding SetBudgetCommand}" Content="Bet">
+					<Button.IsEnabled>
+						<MultiBinding Converter="{x:Static BoolConverters.And}">
+							<Binding Path="GameOver" Converter="{x:Static BoolConverters.Not}"/>
+							<Binding Path="IsBetValid"/>
+						</MultiBinding>
+					</Button.IsEnabled>
+				</Button>
+				<Button Classes="budget" IsEnabled="{Binding !GameOver}"  Command="{Binding AllInCommand}">All In</Button>
+			</StackPanel>
+      
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" IsVisible="{Binding BudgetVisibility}">
+        <Button Command="{Binding AddBudgetCommand}" CommandParameter="0,25" Content="25%" />
+        <Button Command="{Binding AddBudgetCommand}" CommandParameter="0,5" Content="50%" />
+        <Button Command="{Binding AddBudgetCommand}" CommandParameter="0,75" Content="75%" />
+      </StackPanel>
+      
+			<StackPanel VerticalAlignment="Center" Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Center" Margin="10">
+				<Button Content="Hit" IsEnabled="{Binding ButtonEnabled}" Command="{Binding NewCardCommand}" Width="150" Height="40" Margin="0 0 5 0"/>
+				<Button Content="Stand" IsEnabled="{Binding ButtonEnabled}" Command="{Binding DealersTurnCommand}" Width="150" Height="40" Margin="5 0 0 0"/>
+			</StackPanel>
+      
+		</StackPanel>
+	</Grid>
+</UserControl>

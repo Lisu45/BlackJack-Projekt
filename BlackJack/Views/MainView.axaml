@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+						 xmlns:viewModel="clr-namespace:BlackJack.ViewModels;assembly=BlackJack"
+						 xmlns:views="clr-namespace:BlackJack.Views;assembly=BlackJack"
+						 Background="{DynamicResource SecondaryBackground}"
+             x:Class="BlackJack.Views.MainView">
+	<Design.DataContext>
+		<viewModel:MainViewModel />
+	</Design.DataContext>
+	
+	<Grid RowDefinitions="Auto, *">
+		<ContentControl Background="{DynamicResource PrimaryBackground}" Grid.Row="1" Content="{Binding CurrentPage}"/>
+		<Button Classes="secondary" Command="{Binding RestartGameCommand}" Content="Zresetuj grę" Margin="10">
+			<Button.IsVisible>
+				<MultiBinding Converter="{x:Static BoolConverters.Or}">
+					<Binding Path="GameOver"/>
+					<Binding Path="StatsOpened"/>
+				</MultiBinding>
+			</Button.IsVisible>
+		</Button>
+    <TextBlock Text="{Binding Username}" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+		<Button Classes="transparent" IsVisible="{Binding HasGameStarted}" HorizontalAlignment="Right" Command="{Binding ChangeViewCommand}">
+			<Label Classes="Icon" Foreground="{DynamicResource SecondaryForeground}" FontSize="25" Content="{Binding StatsCloseIcon}"/>
+		</Button>
+	</Grid>
+</UserControl>

@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:viewModel="clr-namespace:BlackJack.ViewModels"
+              xmlns:local="clr-namespace:BlackJack.Model;assembly=BlackJack"
+             x:Class="BlackJack.Views.StartView">
+
+  <StackPanel VerticalAlignment="Center">
+    <TextBlock Text="BlackJack!" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <TextBox Watermark="Wprowadź nazwe gracza" Text="{Binding Username}" MaxWidth="200" Margin="10"></TextBox>
+    <Button Content="Start" HorizontalAlignment="Center" Command="{Binding StartGameCommand}" IsEnabled="{Binding IsUsernameValid}"/>
+    
+    <Grid Background="{DynamicResource ScondaryBackground}" HorizontalAlignment="Center" Margin="10" ColumnDefinitions="auto">
+      <StackPanel>
+      </StackPanel>
+    </Grid>
+  </StackPanel>
+</UserControl>
